@@ -25,6 +25,7 @@ format:
     toc: true
     toc-location: left
     code-fold: show
+    code-copy: false
     code-tools: true
 
 execute:

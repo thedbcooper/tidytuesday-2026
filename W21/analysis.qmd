@@ -5,13 +5,6 @@ author: "Daniel B. Mason (Cooper)"
 date: 2026-05-26
 date-modified: last-modified
 categories: [energy, environment]
-freeze: true
-format:
-  html:
-    toc: true
-    toc-location: left
-    code-fold: false
-    code-tools: true
 ---
 
 **Data Source**: [TidyTuesday 2026 Data](https://github.com/rfordatascience/tidytuesday/tree/main/data/2026)
