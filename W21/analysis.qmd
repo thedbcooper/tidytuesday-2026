@@ -2,7 +2,8 @@
 title: "Week 21: Energy Consumption"
 description: "Exploring global energy consumption trends using EIA data."
 author: "Daniel B. Mason (Cooper)"
-date: 2026-05-19
+date: 2026-05-26
+date-modified: last-modified
 categories: [energy, environment]
 freeze: true
 format:
@@ -36,58 +37,110 @@ tt <- tidytuesdayR::tt_load(2026, week = 21)
 ```{r}
 #| label: explore data
 
-# Inspect available datasets
-names(tt)
-
-# Load the main dataset (update name as needed)
 df <- tt$energy_cleaned
 
-summarytools::dfSummary(df)
+# Dataset dimensions and year range
+cat("Rows:", nrow(df), "| Cols:", ncol(df), "\n")
+cat("Year range:", min(df$yr), "–", max(df$yr), "\n")
+cat("Countries:", n_distinct(df$country_name), "\n")
+
+# Check missingness on key columns
+df |>
+  select(
+    country_name, yr,
+    renewable_energy_consumption_tfec_pct,
+    access_electricity_total_pop_pct,
+    total_final_consumption_terajoules
+  ) |>
+  summarise(across(everything(), \(x) sum(is.na(x))))
 
 ```
 
 ```{r}
 #| label: wrangle data
 
+library(stringr)
+
+focus_countries <- c("United States", "China", "Germany", "India", "Brazil")
+
+renewable_trends <- df |>
+  filter(country_name %in% focus_countries) |>
+  select(
+    country_name,
+    yr,
+    renewable_energy_consumption_tfec_pct,
+    traditional_biomass_consumption_tfec_pct,
+    access_electricity_total_pop_pct
+  ) |>
+  # Separate modern renewables (total renewable minus traditional biomass)
+  mutate(
+    modern_renewable_pct = renewable_energy_consumption_tfec_pct -
+      coalesce(traditional_biomass_consumption_tfec_pct, 0)
+  ) |>
+  filter(!is.na(renewable_energy_consumption_tfec_pct))
 
 ```
 
 ```{r}
 #| label: visualize 
 
-# p <- ggplot(df, aes(...)) +
-#   geom_...() +
-#   labs(
-#     title    = "",
-#     subtitle = "",
-#     caption  = "Source: TidyTuesday W21 2026 | @yourhandle",
-#     x = "",
-#     y = ""
-#   ) +
-#   theme_tt()
+country_colors <- c(
+  "Brazil"        = tt_colors[["blue"]],
+  "China"         = tt_colors[["vermillion"]],
+  "Germany"       = tt_colors[["green"]],
+  "India"         = tt_colors[["orange"]],
+  "United States" = tt_colors[["sky_blue"]]
+)
+
+main_plot <- ggplot(
+  renewable_trends,
+  aes(x = yr, y = renewable_energy_consumption_tfec_pct, color = country_name)
+) +
+  geom_line(linewidth = 0.9) +
+  scale_color_manual(values = country_colors) +
+  labs(
+    title    = "Renewable Energy as Share of Total Final Energy Consumption",
+    subtitle = "Five major economies, 1990–2010",
+    caption  = "Source: TidyTuesday W21 2026 · EIA / World Bank | @cooperdbm",
+    x        = NULL,
+    y        = "Renewable Share of TFEC (%)",
+    color    = NULL
+  ) +
+  theme_tt()
+
+
 
 ```
+
+## Visualization
 
 ```{r}
 #| label: main-plot
 
-# ggplot2::ggsave(path, plot = plot, width = width, height = height, dpi = dpi)
+ggplot2::ggsave(
+  "main_plot.png",
+  plot   = main_plot,
+  width  = 9,
+  height = 5.5,
+  dpi    = 300
+)
 
+main_plot
 ```
 
 ## Key Findings
 
-- *(finding 1)*
-- *(finding 2)*
-- *(finding 3)*
+- **Brazil and India** began the period with high renewable shares (~50% and ~57% respectively), but both declined — driven by growing fossil fuel consumption as their economies expanded.
 
-## Visualization
+- **China** showed a similar downward trend, dropping from ~33% to ~19% as rapid industrialization increased total energy demand faster than renewable capacity.
 
-![Main Plot](main_plot.png)
+- **Germany and the United States** started low (~2–6%) but grew modestly through the 2000s, reflecting early wind and solar policy investments; Germany's growth was notably faster.
+
+- Across all five countries, high renewable shares often reflect reliance on traditional biomass rather than modern clean energy — an important distinction for interpreting "renewable" in developing economies.
 
 ## Methodology
 
-*(Briefly describe your analytical approach, any data cleaning decisions, and choices made in the visualization.)*
+The dataset (`energy_cleaned`) covers 1990–2010 across ~140 countries with 52 variables from the EIA/World Bank. Five major economies were selected to represent a range of income levels and energy trajectories. The primary metric — renewable energy as a share of total final energy consumption (TFEC) — includes both modern renewables (wind, solar, hydro) and traditional biomass. A `modern_renewable_pct` column was derived by subtracting the traditional biomass share to allow for richer follow-up analysis, though the main visualization uses the total renewable share to match the source definition. Missing values were present in many columns but not in the key trend variable for the selected countries.
 
 ## Reproduce
 System requirements: R (version 4.6 or higher), quarto cli (or Positron or RStudio IDE), Rtools45 for Windows (or equivalent build tools for other OS)
