@@ -19,6 +19,7 @@ format:
 ```{r}
 #| label: setup
 #| message: false
+source("renv/activate.R")
 
 library(dplyr)
 library(ggplot2)
@@ -143,19 +144,30 @@ main_plot
 The dataset (`energy_cleaned`) covers 1990–2010 across ~140 countries with 52 variables from the EIA/World Bank. Five major economies were selected to represent a range of income levels and energy trajectories. The primary metric — renewable energy as a share of total final energy consumption (TFEC) — includes both modern renewables (wind, solar, hydro) and traditional biomass. A `modern_renewable_pct` column was derived by subtracting the traditional biomass share to allow for richer follow-up analysis, though the main visualization uses the total renewable share to match the source definition. Missing values were present in many columns but not in the key trend variable for the selected countries.
 
 ## Reproduce
-System requirements: R (version 4.6 or higher), quarto cli (or Positron or RStudio IDE), Rtools45 for Windows (or equivalent build tools for other OS)
+
+Run this week's analysis with the following code in your R environment. Make sure you have the necessary system requirements and that you have cloned the repository to your local machine.
+
 ```r
 setwd("W21")        # set working directory to this week's folder
 renv::restore()     # restore locked package environment
 quarto::quarto_render("analysis.qmd")
 ```
 
-## Packages Used
+**System requirements**
 
-*(Auto-populated via renv::snapshot() — see renv.lock)*
+* R version 4.6.x
+* quarto cli version `{r} quarto::quarto_version()` or greater
+* Optional: Positron version `{r} Sys.getenv("POSITRON_VERSION")` or RStudio IDE
+* Rtools45 for Windows (or equivalent build tools for other OS)
 
+*View [renv.lock](renv.lock) for detailed package information*
 
+### Session Info
 ```{r}
-#| label: session-info
+#| label: dependencies
+
+cat("Quarto version", as.character(quarto::quarto_version()))
+
 sessionInfo()
+
 ```

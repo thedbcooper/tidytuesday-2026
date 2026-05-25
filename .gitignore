@@ -13,6 +13,7 @@ data/raw/
 
 # Quarto output
 analysis_files/
+analysis_cache/
 # _freeze/ is NOT ignored — frozen execution outputs must be committed for site builds
 _site/
 /.quarto/
