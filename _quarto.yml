@@ -3,8 +3,11 @@ project:
   output-dir: _site
 
 website:
+  open-graph: true
   title: "TidyTuesday 2026"
   navbar:
+    background: "#2c3419"
+    foreground: "#ffffff"
     left:
       - href: index.qmd
         text: Home
@@ -18,7 +21,7 @@ website:
 
 format:
   html:
-    theme: cosmo
+    theme: [default, styles.scss]
     toc: true
     toc-location: left
     code-fold: show

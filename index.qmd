@@ -1,6 +1,12 @@
 ---
 title: "TidyTuesday 2026"
 subtitle: "Weekly data analysis and visualization submissions for the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) social data project."
+format:
+  html:
+    theme: [cosmo, styles.scss]
+    toc: false
+    code-fold: false
+    code-tools: false
 listing:
   contents: "W*/analysis.qmd"
   type: grid

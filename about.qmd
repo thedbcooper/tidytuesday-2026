@@ -1,18 +1,32 @@
 ---
-title: "About"
+title: "About Project"
+format:
+  html:
+    theme: [cosmo, styles.scss]
+    toc: false
+    code-fold: false
+    code-tools: false
+about:
+  template: solana
+  image: profile.jpg
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/danielblakecooper/
+    - icon: github
+      text: Github
+      href: https://github.com/thedbcooper
 ---
+
+Daniel B. Mason (Cooper) is a molecular/ wastewater epidemiologist and data scientist with over 5 years' experience in public health research and applied analytics. He holds a MPH in Epidemiology from the University of Kentucky, and his work focuses on wastewater-based surveillance for infectious diseases, environmental health, and data-driven public health decision-making. He has published in peer-reviewed journals and presented at conferences on topics including population health and electronic medical record based analysis. 
+
+## TidyTuesday 2026 | Weekly Data Analyst | Jan 2026 - present
 
 Weekly data analyses and visualizations for the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) social data project, hosted by the R4DS Community.
 
 Each week a new dataset is released. This site collects my explorations for 2026, built with R and Quarto.
 
-## Author
-
-**Daniel B. Mason (Cooper)**
-
-- GitHub: [thedbcooper](https://github.com/thedbcooper)
-
-## Tech Stack
+### Tech Stack
 
 - **Language**: R
 - **Visualization**: ggplot2
@@ -20,6 +34,6 @@ Each week a new dataset is released. This site collects my explorations for 2026
 - **Reporting**: Quarto
 - **Reproducibility**: per-week `renv` lockfiles
 
-## License
+### License
 
 This project's executable code is licensed under the [MIT](https://github.com/thedbcooper/tidytuesday-2026/blob/main/LICENSE-MIT) License, while the markdown text, documentation, and visual media are licensed under [CC BY 4.0](https://github.com/thedbcooper/tidytuesday-2026/blob/main/LICENSE-CC-BY-4.0).
