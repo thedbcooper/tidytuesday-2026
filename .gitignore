@@ -13,3 +13,4 @@ data/raw/
 
 # Quarto output
 analysis_files/
+*.html
