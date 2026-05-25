@@ -46,7 +46,7 @@ tidytuesday-2026/
 
 | Week | Date | Topic | Folder |
 |------|------|-------|--------|
-| W21 | 2026-05-19 | Energy Consumption | [W21/](W21/) |
+| W21 | 2026-05-26 | Energy Consumption | [W21/](W21/) |
 
 *Table updated each week after submission.*
 
@@ -80,7 +80,7 @@ quarto::quarto_render("analysis.qmd")
 
 * R version 4.6.x
 * quarto cli
-* Optional: Positron version
+* Optional: Positron IDE
 * Rtools45 for Windows (or equivalent build tools for other OS)
 
 ---
