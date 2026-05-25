@@ -1,6 +1,10 @@
 ---
-title: "TidyTuesday Week 21, 2026: Energy Consumption Analysis"
+title: "Week 21: Energy Consumption"
+description: "Exploring global energy consumption trends using EIA data."
 author: "Daniel B. Mason (Cooper)"
+date: 2026-05-19
+categories: [energy, environment]
+freeze: true
 format:
   html:
     toc: true

@@ -1,0 +1,4 @@
+- source: project
+  posit-connect-cloud:
+    - id: 019e5db7-8a83-5276-0b20-3e9c14354937
+      url: https://connect.posit.cloud/thedbcooper/content/019e5db7-8a83-5276-0b20-3e9c14354937

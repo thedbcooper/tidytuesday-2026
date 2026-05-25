@@ -1,0 +1,10 @@
+---
+title: "TidyTuesday 2026"
+subtitle: "Weekly data analysis and visualization submissions for the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) social data project."
+listing:
+  contents: "W*/analysis.qmd"
+  type: grid
+  sort: "date desc"
+  categories: true
+  fields: [title, date, description, categories]
+---

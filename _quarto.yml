@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "TidyTuesday 2026"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+  repo-url: https://github.com/cooperdmason/tidytuesday-2026
+  repo-actions: [issue]
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-location: left
+    code-fold: show
+    code-tools: true
+
+execute:
+  freeze: auto

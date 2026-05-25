@@ -2,7 +2,7 @@
 
 Weekly data analysis and visualization submissions for the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) social data project, hosted by the R4DS Community.
 
-Each week a new dataset is released. This repo contains my analyses, explorations, and visualizations for 2026.
+Each week a new dataset is released. This repo contains my analyses, explorations, and visualizations for 2026. View the live site at [Quarto Pub](https://quartopub.com).
 
 ---
 
@@ -11,7 +11,7 @@ Each week a new dataset is released. This repo contains my analyses, exploration
 - **Language**: R
 - **Visualization**: ggplot2
 - **Data Wrangling**: dplyr, tidyr
-- **Reporting**: Quarto
+- **Reporting**: Quarto (website + frozen per-week outputs)
 - **Reproducibility**: per-week `renv` lockfiles
 - **Data Loading**: tidytuesdayR
 
@@ -27,18 +27,20 @@ Each week a new dataset is released. This repo contains my analyses, exploration
 
 ---
 
-## How to Run a Submission
+## Workflow: Render → Freeze → Publish
 
-Each week folder contains its own `renv.lock` — you can restore the exact package environment used:
+This site uses [Quarto's freeze feature](https://quarto.org/docs/projects/code-execution.html#freeze) to combine per-week `renv` isolation with a unified website:
 
-```r
-# From inside a week folder (e.g., W21/)
-setwd("W21")        # set working directory to this week's folder
-renv::restore()     # restore locked package environment
-quarto::quarto_render("analysis.qmd")
-```
+1. **Write locally**: Open `WXX/` in RStudio/Positron. `renv` auto-activates via `.Rprofile`.
+2. **Restore & render**: 
+   ```r
+   renv::restore()     # Install locked packages for this week
+   quarto::quarto_render("analysis.qmd")
+   ```
+3. **Freeze**: Quarto stores executed outputs in `WXX/_freeze/` (committed to repo).
+4. **Publish**: Run `quarto publish quarto-pub` from the project root. Site builds from frozen outputs—no re-execution needed.
 
-Or open the week's directory in RStudio/Positron — `renv` will activate automatically.
+Each week's code runs **once, locally, in its own environment**. The frozen snapshot ensures reproducibility and keeps the site build lightweight.
 
 ---
 
@@ -46,12 +48,42 @@ Or open the week's directory in RStudio/Positron — `renv` will activate automa
 
 ```
 tidytuesday-2026/
-├── utils/       # Shared ggplot2 theme, palettes, helpers (sourced, not installed)
-├── W21/              # Week 21 submission
-│   ├── renv.lock     # Locked package versions for this week
-│   ├── analysis.qmd  # Main analysis script
-│   └── README.md     # Findings & methodology
-└── WXX/              # Future weeks follow same structure
+├── _quarto.yml          # Site config (navbar, theme, freeze settings)
+├── index.qmd            # Landing page with auto-generated listing
+├── about.qmd            # About page
+├── utils/               # Shared ggplot2 theme, palettes, helpers (sourced, not installed)
+├── W21/                 # Week 21 submission
+│   ├── renv.lock        # Locked package versions for this week
+│   ├── analysis.qmd     # Analysis (rendered locally, frozen outputs committed)
+│   └── _freeze/         # Frozen execution outputs (committed to repo)
+└── WXX/                 # Future weeks follow same structure
+```
+
+---
+
+## Preview & Publish
+
+**Preview locally:**
+```bash
+quarto preview
+```
+
+**Publish to Quarto Pub:**
+```bash
+quarto publish quarto-pub
+```
+
+---
+
+## Reproduce a Single Week
+
+To re-render and verify a week's analysis with its locked environment:
+
+```r
+# From the project root
+setwd("W21")
+renv::restore()
+quarto::quarto_render("analysis.qmd")
 ```
 
 ---

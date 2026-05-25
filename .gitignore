@@ -13,4 +13,8 @@ data/raw/
 
 # Quarto output
 analysis_files/
-*.html
+# _freeze/ is NOT ignored — frozen execution outputs must be committed for site builds
+_site/
+/.quarto/
+
+**/*.quarto_ipynb

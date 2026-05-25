@@ -1,0 +1,25 @@
+---
+title: "About"
+---
+
+Weekly data analyses and visualizations for the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) social data project, hosted by the R4DS Community.
+
+Each week a new dataset is released. This site collects my explorations for 2026, built with R and Quarto.
+
+## Author
+
+**Daniel B. Mason (Cooper)**
+
+- GitHub: [thedbcooper](https://github.com/thedbcooper)
+
+## Tech Stack
+
+- **Language**: R
+- **Visualization**: ggplot2
+- **Data Wrangling**: dplyr, tidyr
+- **Reporting**: Quarto
+- **Reproducibility**: per-week `renv` lockfiles
+
+## License
+
+Code: [MIT](https://github.com/cooperdmason/tidytuesday-2026/blob/main/LICENSE) · Visualizations: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
