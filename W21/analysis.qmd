@@ -157,7 +157,7 @@ quarto::quarto_render("analysis.qmd")
 
 * R version 4.6.x
 * quarto cli version `{r} quarto::quarto_version()` or greater
-* Optional: Positron version `{r} Sys.getenv("POSITRON_VERSION")` or RStudio IDE
+* Optional: Positron version `{r} Sys.getenv("POSITRON_VERSION")` or greater
 * Rtools45 for Windows (or equivalent build tools for other OS)
 
 *View [renv.lock](renv.lock) for detailed package information*

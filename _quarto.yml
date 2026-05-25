@@ -28,4 +28,4 @@ format:
     code-tools: true
 
 execute:
-  freeze: auto
+  freeze: true
