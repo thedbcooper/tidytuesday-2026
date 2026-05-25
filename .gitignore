@@ -1,0 +1,15 @@
+# Raw data (always download fresh from TidyTuesday source)
+data/raw/
+
+# R session artifacts
+.Rhistory
+.RData
+.Rapp.history
+
+# IDE
+.Rproj.user/
+.vscode/
+.positron/
+
+# Quarto output
+analysis_files/
