@@ -10,8 +10,11 @@ website:
         text: Home
       - href: about.qmd
         text: About
-  repo-url: https://github.com/cooperdmason/tidytuesday-2026
-  repo-actions: [issue]
+    tools:
+      - icon: github
+        href: https://github.com/thedbcooper/tidytuesday-2026
+  repo-url: https://github.com/thedbcooper/tidytuesday-2026
+  repo-actions: [issue, source]
 
 format:
   html:
