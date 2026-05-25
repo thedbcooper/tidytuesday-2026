@@ -20,7 +20,7 @@ about:
 
 Daniel B. Mason (Cooper) is a molecular/ wastewater epidemiologist and data scientist with over 5 years' experience in public health research and applied analytics. He holds a MPH in Epidemiology from the University of Kentucky, and his work focuses on wastewater-based surveillance for infectious diseases, environmental health, and data-driven public health decision-making. He has published in peer-reviewed journals and presented at conferences on topics including population health and electronic medical record based analysis. 
 
-## TidyTuesday 2026 | Weekly Data Analyst | Jan 2026 - present
+## TidyTuesday 2026 | Weekly Data Analysis & Visualization
 
 Weekly data analyses and visualizations for the [#TidyTuesday](https://github.com/rfordatascience/tidytuesday) social data project, hosted by the R4DS Community.
 

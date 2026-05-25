@@ -10,7 +10,7 @@ format:
   html:
     toc: true
     toc-location: left
-    code-fold: show
+    code-fold: false
     code-tools: true
 ---
 
@@ -45,71 +45,90 @@ cat("Rows:", nrow(df), "| Cols:", ncol(df), "\n")
 cat("Year range:", min(df$yr), "–", max(df$yr), "\n")
 cat("Countries:", n_distinct(df$country_name), "\n")
 
-# Check missingness on key columns
-df |>
-  select(
-    country_name, yr,
-    renewable_energy_consumption_tfec_pct,
-    access_electricity_total_pop_pct,
-    total_final_consumption_terajoules
-  ) |>
-  summarise(across(everything(), \(x) sum(is.na(x))))
+skimr::skim(df)
 
 ```
 
 ```{r}
 #| label: wrangle data
+energy_labels <- c(
+  biogas_consumption_tfec_pct = "Biogas",
+  geothermal_energy_consumption_tfec_pct = "Geothermal",
+  hydro_energy_consumption_tfec_pct = "Hydro",
+  liquid_biofuels_energy_consumption_tfec_pct = "Liquid biofuels",
+  marine_energy_consumption_tfec_pct = "Marine",
+  modern_biomass_energy_consumption_tfec_pct = "Modern biomass",
+  solar_energy_consumption_tfec_pct = "Solar",
+  traditional_biomass_consumption_tfec_pct = "Traditional biomass",
+  waste_energy_consumption_tfec_pct = "Waste",
+  wind_energy_consumption_tfec_pct = "Wind"
+)
 
-library(stringr)
+biomass_types <- c("Traditional biomass", "Modern biomass")
 
-focus_countries <- c("United States", "China", "Germany", "India", "Brazil")
+wb_url <- paste0(
+  "https://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL",
+  "?format=json&per_page=20000&date=2010"
+)
 
-renewable_trends <- df |>
-  filter(country_name %in% focus_countries) |>
-  select(
-    country_name,
-    yr,
-    renewable_energy_consumption_tfec_pct,
-    traditional_biomass_consumption_tfec_pct,
-    access_electricity_total_pop_pct
+pop_2010 <- jsonlite::fromJSON(readr::read_file(wb_url), flatten = TRUE)[[2]] |>
+  transmute(
+    country_code = countryiso3code,
+    population_2010 = as.numeric(value)
   ) |>
-  # Separate modern renewables (total renewable minus traditional biomass)
+  filter(!is.na(country_code), nchar(country_code) == 3, !is.na(population_2010)) |>
+  distinct(country_code, .keep_all = TRUE)
+
+country_pop_q <- df |>
+  distinct(country_code) |>
+  inner_join(pop_2010, by = "country_code") |>
   mutate(
-    modern_renewable_pct = renewable_energy_consumption_tfec_pct -
-      coalesce(traditional_biomass_consumption_tfec_pct, 0)
-  ) |>
-  filter(!is.na(renewable_energy_consumption_tfec_pct))
+    pop_quartile = ntile(population_2010, 4),
+    pop_quartile = factor(
+      pop_quartile,
+      levels = 1:4,
+      labels = c("Q1: smallest populations", "Q2", "Q3", "Q4: largest populations")
+    )
+  )
 
+non_biomass_by_pop <- df |>
+  inner_join(country_pop_q, by = "country_code") |>
+  select(country_code, yr, pop_quartile, ends_with("tfec_pct") & !starts_with("renewable")) |>
+  pivot_longer(
+    cols = ends_with("tfec_pct"),
+    names_to = "energy_type",
+    values_to = "pct"
+  ) |>
+  mutate(energy_type = recode(energy_type, !!!energy_labels)) |>
+  filter(!(energy_type %in% biomass_types)) |>
+  summarize(pct = mean(pct, na.rm = TRUE), .by = c(pop_quartile, yr, energy_type)) |>
+  filter(is.finite(pct))
+
+non_biomass_order <- non_biomass_by_pop |>
+  summarize(avg_pct = mean(pct, na.rm = TRUE), .by = energy_type) |>
+  arrange(desc(avg_pct)) |>
+  pull(energy_type)
+
+non_biomass_by_pop <- non_biomass_by_pop |>
+  mutate(energy_type = factor(energy_type, levels = non_biomass_order))
 ```
 
 ```{r}
 #| label: visualize 
 
-country_colors <- c(
-  "Brazil"        = tt_colors[["blue"]],
-  "China"         = tt_colors[["vermillion"]],
-  "Germany"       = tt_colors[["green"]],
-  "India"         = tt_colors[["orange"]],
-  "United States" = tt_colors[["sky_blue"]]
-)
-
-main_plot <- ggplot(
-  renewable_trends,
-  aes(x = yr, y = renewable_energy_consumption_tfec_pct, color = country_name)
-) +
-  geom_line(linewidth = 0.9) +
-  scale_color_manual(values = country_colors) +
+main_plot <- ggplot(non_biomass_by_pop, aes(x = yr, y = pct, fill = energy_type)) +
+  geom_area(alpha = 0.8, linewidth = 0.25, color = NA) +
+  facet_wrap(~ pop_quartile, ncol = 2, scales = "free_y") +
+  scale_fill_brewer(type = "qual", palette = "Paired", name = "Non-biomass source") +
   labs(
-    title    = "Renewable Energy as Share of Total Final Energy Consumption",
-    subtitle = "Five major economies, 1990–2010",
-    caption  = "Source: TidyTuesday W21 2026 · EIA / World Bank | @cooperdbm",
-    x        = NULL,
-    y        = "Renewable Share of TFEC (%)",
-    color    = NULL
+    title = "Non-biomass Renewable Share of TFE\n by 2010 Population Quartile",
+    subtitle = "Country-level means within each quartile (equal-country weighting)",
+    x = NULL,
+    y = "Share of TFEC (%)",
+    caption = "Population source: World Bank indicator SP.POP.TOTL (2010)."
   ) +
+  guides(fill = guide_legend(reverse = TRUE)) +
   theme_tt()
-
-
 
 ```
 
@@ -117,12 +136,14 @@ main_plot <- ggplot(
 
 ```{r}
 #| label: main-plot
+#| fig-width: 8
+#| fig-height: 6
 
 ggplot2::ggsave(
   "main_plot.png",
   plot   = main_plot,
-  width  = 9,
-  height = 5.5,
+  width  = 8,
+  height = 6,
   dpi    = 300
 )
 
@@ -131,17 +152,15 @@ main_plot
 
 ## Key Findings
 
-- **Brazil and India** began the period with high renewable shares (~50% and ~57% respectively), but both declined — driven by growing fossil fuel consumption as their economies expanded.
+- After removing traditional and modern biomass from the stacked areas, hydro remains the dominant non-biomass source across quartiles, while wind and solar increase gradually from low starting levels.
 
-- **China** showed a similar downward trend, dropping from ~33% to ~19% as rapid industrialization increased total energy demand faster than renewable capacity.
+- The smallest-population quartile shows substantially higher and more volatile non-biomass shares than other quartiles, with a notable jump near the end of the series.
 
-- **Germany and the United States** started low (~2–6%) but grew modestly through the 2000s, reflecting early wind and solar policy investments; Germany's growth was notably faster.
-
-- Across all five countries, high renewable shares often reflect reliance on traditional biomass rather than modern clean energy — an important distinction for interpreting "renewable" in developing economies.
+- Larger-population quartiles (Q3–Q4) remain lower and flatter overall, suggesting slower aggregate shifts in non-biomass renewable composition under equal-country weighting.
 
 ## Methodology
 
-The dataset (`energy_cleaned`) covers 1990–2010 across ~140 countries with 52 variables from the EIA/World Bank. Five major economies were selected to represent a range of income levels and energy trajectories. The primary metric — renewable energy as a share of total final energy consumption (TFEC) — includes both modern renewables (wind, solar, hydro) and traditional biomass. A `modern_renewable_pct` column was derived by subtracting the traditional biomass share to allow for richer follow-up analysis, though the main visualization uses the total renewable share to match the source definition. Missing values were present in many columns but not in the key trend variable for the selected countries.
+The dataset (`energy_cleaned`) covers 1990–2010 across ~140 countries with 52 variables from the EIA/World Bank. Five major economies were selected to represent a range of income levels and energy trajectories. The primary metric — renewable energy as a share of total final energy consumption (TFEC) — includes both modern renewables (wind, solar, hydro) and traditional biomass. To focus on the former, we excluded traditional biomass and analyzed trends by population quartiles (based on 2010 population) to explore how energy transitions may differ by country size. We used area charts to visualize the composition of non-biomass renewables over time within each population quartile.
 
 ## Reproduce
 

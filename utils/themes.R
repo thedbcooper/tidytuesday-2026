@@ -13,7 +13,7 @@ theme_tt <- function(base_size = 13, base_family = "") {
       plot.subtitle = element_text(size = base_size * 1.05, color = "grey40",
                                    margin = margin(b = 10)),
       plot.caption  = element_text(size = base_size * 0.75, color = "grey55",
-                                   hjust = 0, margin = margin(t = 10)),
+                                   margin = margin(t = 10)),
 
       # Axes
       axis.title    = element_text(size = base_size * 0.9, color = "grey30"),
