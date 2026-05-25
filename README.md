@@ -98,4 +98,4 @@ This repo covers **2026 only**. A fresh repo (`tidytuesday-2027`) will be create
 
 Code: [MIT](https://github.com/thedbcooper/tidytuesday-2026/blob/main/LICENSE-MIT)
 
-Visualizations: [CC-BY-4.0](https://github.com/thedbcooper/tidytuesday-2026/blob/main/LICENSE-CC-BY-4.0)
+Visualizations & Written Content: [CC-BY-4.0](https://github.com/thedbcooper/tidytuesday-2026/blob/main/LICENSE-CC-BY-4.0)
