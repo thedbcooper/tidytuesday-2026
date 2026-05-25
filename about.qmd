@@ -22,4 +22,4 @@ Each week a new dataset is released. This site collects my explorations for 2026
 
 ## License
 
-Code: [MIT](https://github.com/cooperdmason/tidytuesday-2026/blob/main/LICENSE) · Visualizations: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
